@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smart Calculator</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --btn-bg: #e0e1e6;
+      --btn-hover: #d2d3d8;
+      --display-bg: #222;
+      --display-text: #fff;
+    }
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #ffffff;
+      --btn-bg: #1e1e1e;
+      --btn-hover: #333;
+      --display-bg: #333;
+      --display-text: #00ff95;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: all 0.3s ease;
+    }
+
+    .calculator {
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      width: 320px;
+    }
+
+    .display {
+      height: 60px;
+      background-color: var(--display-bg);
+      color: var(--display-text);
+      font-size: 2em;
+      text-align: right;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button, .toggle-dark {
+      font-size: 1.2em;
+      padding: 18px;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--btn-bg);
+      cursor: pointer;
+      transition: 0.2s;
+      color: var(--text-color);
+    }
+
+    .buttons button:hover, .toggle-dark:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .operator { background-color: #ff9500; color: #fff; }
+    .operator:hover { background-color: #e08900; }
+    .equal { background-color: #34c759; color: white; }
+    .equal:hover { background-color: #28a745; }
+    .clear { background-color: #ff3b30; color: white; }
+    .clear:hover { background-color: #e03028; }
+
+    .toggle-dark {
+      margin-top: 15px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <div id="display" class="display">0</div>
+  <div class="buttons">
+    <button class="clear" onclick="clearDisplay()">C</button>
+    <button onclick="appendValue('(')">(</button>
+    <button onclick="appendValue(')')">)</button>
+    <button class="operator" onclick="appendValue('/')">÷</button>
+
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button class="operator" onclick="appendValue('*')">×</button>
+
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button class="operator" onclick="appendValue('-')">−</button>
+
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button class="operator" onclick="appendValue('+')">+</button>
+
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button class="equal" onclick="calculate()">=</button>
+  </div>
+
+  <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
+</div>
+
+<script>
+  const display = document.getElementById("display");
+  let dark = false;
+
+  function appendValue(value) {
+    if (display.innerText === "0" || display.innerText === "Error") {
+      display.innerText = value;
+    } else {
+      display.innerText += value;
+    }
+  }
+
+  function clearDisplay() {
+    display.innerText = "0";
+  }
+
+  function calculate() {
+    try {
+      const result = eval(display.innerText);
+      display.innerText = result;
+    } catch {
+      display.innerText = "Error";
+    }
+  }
+
+  function toggleDarkMode() {
+    document.body.classList.toggle("dark-mode");
+    dark = !dark;
+  }
+
+  // Keyboard Support
+  document.addEventListener("keydown", (event) => {
+    const key = event.key;
+    if (!isNaN(key) || ["+", "-", "*", "/", ".", "(", ")"].includes(key)) {
+      appendValue(key);
+    } else if (key === "Enter") {
+      event.preventDefault();
+      calculate();
+    } else if (key === "Backspace") {
+      display.innerText = display.innerText.slice(0, -1) || "0";
+    } else if (key === "Escape") {
+      clearDisplay();
+    }
+  });
+</script>
+
+</body>
+</html>
